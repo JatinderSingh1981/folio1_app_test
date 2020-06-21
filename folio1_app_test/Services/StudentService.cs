@@ -15,9 +15,9 @@ namespace folio1_app_test.Services
         Task<(Student Student, bool IsSuccess, string Message)> GetStudentAsync(int StudentId);
         Task<(bool IsSuccess, string Message)> CheckDuplicateAsync(int StudentId, string studentLastName);
         Task<(Student student, bool IsSuccess, string Message)> AddStudentAsync(Student student);
-        Task<(bool IsSuccess, string Message)> EditStudentAsync(int id, Student student);
-        Task<(bool IsSuccess, string Message)> DeleteClassStudentsAsync(int id);
-        Task<(bool IsSuccess, string Message)> DeleteStudentAsync(int id);
+        Task<(Student student, bool IsSuccess, string Message)> EditStudentAsync(int id, Student student);
+        Task<(Student student, bool IsSuccess, string Message)> DeleteClassStudentsAsync(int id);
+        Task<(Student student, bool IsSuccess, string Message)> DeleteStudentAsync(int id);
     }
     public class StudentService : IStudentService
     {
@@ -58,7 +58,7 @@ namespace folio1_app_test.Services
                     var result = mapper.Map<IEnumerable<Student>>(students);
                     return (result, true, null);
                 }
-                return (null, true, "Not found");
+                return (null, false, "Not found");
             }
             catch (Exception ex)
             {
@@ -108,7 +108,7 @@ namespace folio1_app_test.Services
                     return (false, lastNameErrorMessage);
                 }
 
-                return (true, null);
+                return (true, "Success!!!");
             }
             catch (Exception ex)
             {
@@ -139,7 +139,7 @@ namespace folio1_app_test.Services
             }
         }
 
-        public async Task<(bool IsSuccess, string Message)> EditStudentAsync(int id, Student student)
+        public async Task<(Student student, bool IsSuccess, string Message)> EditStudentAsync(int id, Student student)
         {
             try
             {
@@ -150,18 +150,18 @@ namespace folio1_app_test.Services
                     {
                         dbContext.Entry(result).CurrentValues.SetValues(student);
                         await dbContext.SaveChangesAsync();
-                        return (true, "Success!!!");
+                        return (null, true, "Success!!!");
                     }
                 }
-                return (false, "Not found");
+                return (null, false, "Not found");
             }
             catch (Exception ex)
             {
-                return (false, ex.Message);
+                return (null, false, ex.Message);
             }
         }
 
-        public async Task<(bool IsSuccess, string Message)> DeleteClassStudentsAsync(int id)
+        public async Task<(Student student, bool IsSuccess, string Message)> DeleteClassStudentsAsync(int id)
         {
             try
             {
@@ -173,18 +173,18 @@ namespace folio1_app_test.Services
                     {
                         dbContext.Students.RemoveRange(result);
                         await dbContext.SaveChangesAsync();
-                        return (true, "Success!!!");
+                        return (null, true, "Success!!!");
                     }
                 }
-                return (true, "No record found");
+                return ( null, true, "No record found");
             }
             catch (Exception ex)
             {
-                return (false, ex.Message);
+                return (null, false, ex.Message);
             }
         }
 
-        public async Task<(bool IsSuccess, string Message)> DeleteStudentAsync(int id)
+        public async Task<(Student student, bool IsSuccess, string Message)> DeleteStudentAsync(int id)
         {
             try
             {
@@ -196,14 +196,14 @@ namespace folio1_app_test.Services
                     {
                         dbContext.Students.Remove(result);
                         await dbContext.SaveChangesAsync();
-                        return (true, "Success!!!");
+                        return (null, true, "Success!!!");
                     }
                 }
-                return (true, "No record found");
+                return (null, false, "No record found");
             }
             catch (Exception ex)
             {
-                return (false, ex.Message);
+                return (null, false, ex.Message);
             }
         }
     }

@@ -12,9 +12,9 @@ namespace folio1_app_test.BL
         Task<(IEnumerable<FolioClass> FolioClasses, bool IsSuccess, string Message)> GetFolioClassesAsync();
         Task<(FolioClass folioClass, bool IsSuccess, string Message)> AddFolioClassAsync(FolioClass folioClass);
 
-        Task<(bool IsSuccess, string Message)> EditFolioClassAsync(int id, FolioClass folioClass);
+        Task<(FolioClass folioClass, bool IsSuccess, string Message)> EditFolioClassAsync(int id, FolioClass folioClass);
 
-        Task<(bool IsSuccess, string Message)> DeleteFolioClassAsync(int id);
+        Task<(FolioClass folioClass, bool IsSuccess, string Message)> DeleteFolioClassAsync(int id);
     }
     public class FolioClassBL : IFolioClassBL
     {
@@ -36,18 +36,18 @@ namespace folio1_app_test.BL
             return await folioClassService.AddFolioClassAsync(folioClass);
         }
 
-        public async Task<(bool IsSuccess, string Message)> EditFolioClassAsync(int id, FolioClass folioClass)
+        public async Task<(FolioClass folioClass, bool IsSuccess, string Message)> EditFolioClassAsync(int id, FolioClass folioClass)
         {
             return await folioClassService.EditFolioClassAsync(id, folioClass);
         }
 
-        public async Task<(bool IsSuccess, string Message)> DeleteFolioClassAsync(int id)
+        public async Task<(FolioClass folioClass, bool IsSuccess, string Message)> DeleteFolioClassAsync(int id)
         {
             var result = await studentService.DeleteClassStudentsAsync(id);
             if (result.IsSuccess)
                 return await folioClassService.DeleteFolioClassAsync(id);
             else
-                return (result.IsSuccess, result.Message);
+                return (null, result.IsSuccess, result.Message);
         }
     }
 }

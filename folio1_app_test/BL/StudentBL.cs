@@ -13,8 +13,8 @@ namespace folio1_app_test.BL
         Task<(Student Student, bool IsSuccess, string Message)> GetStudentAsync(int StudentId);
         Task<(bool IsSuccess, string Message)> CheckDuplicateAsync(int StudentId, string studentLastName);
         Task<(Student student, bool IsSuccess, string Message)> AddStudentAsync(Student student);
-        Task<(bool IsSuccess, string Message)> EditStudentAsync(int id, Student student);
-        Task<(bool IsSuccess, string Message)> DeleteStudentAsync(int id);
+        Task<(Student student, bool IsSuccess, string Message)> EditStudentAsync(int id, Student student);
+        Task<(Student student, bool IsSuccess, string Message)> DeleteStudentAsync(int id);
     }
     public class StudentBL : IStudentBL
     {
@@ -46,16 +46,16 @@ namespace folio1_app_test.BL
             }
             return await this.studentService.AddStudentAsync(student);
         }
-        public async Task<(bool IsSuccess, string Message)> EditStudentAsync(int id, Student student)
+        public async Task<(Student student, bool IsSuccess, string Message)> EditStudentAsync(int id, Student student)
         {
             var checkDuplicate = await CheckDuplicateAsync(student.Id, student.LastName);
             if (!checkDuplicate.IsSuccess)
             {
-                return (false, checkDuplicate.Message);
+                return (null, false, checkDuplicate.Message);
             }
-            return await this.studentService.EditStudentAsync(id, student);
+            return await this.studentService.EditStudentAsync( id, student);
         }
-        public async Task<(bool IsSuccess, string Message)> DeleteStudentAsync(int id)
+        public async Task<(Student student, bool IsSuccess, string Message)> DeleteStudentAsync(int id)
         {
             return await this.studentService.DeleteStudentAsync(id);
         }

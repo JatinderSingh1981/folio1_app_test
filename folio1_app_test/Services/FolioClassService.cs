@@ -14,9 +14,9 @@ namespace folio1_app_test.Services
         Task<(IEnumerable<FolioClass> FolioClasses, bool IsSuccess, string Message)> GetFolioClassesAsync();
         Task<(FolioClass folioClass, bool IsSuccess, string Message)> AddFolioClassAsync(FolioClass folioClass);
 
-        Task<(bool IsSuccess, string Message)> EditFolioClassAsync(int id, FolioClass folioClass);
+        Task<(FolioClass folioClass, bool IsSuccess, string Message)> EditFolioClassAsync(int id, FolioClass folioClass);
 
-        Task<(bool IsSuccess, string Message)> DeleteFolioClassAsync(int id);
+        Task<(FolioClass folioClass, bool IsSuccess, string Message)> DeleteFolioClassAsync(int id);
     }
     public class FolioClassService : IFolioClassService
     {
@@ -52,7 +52,7 @@ namespace folio1_app_test.Services
                     var result = mapper.Map<IEnumerable<FolioClass>>(classes);
                     return (result, true, "Success!!!");
                 }
-                return (null, true, "Not found");
+                return (null, false, "Not found");
             }
             catch (Exception ex)
             {
@@ -83,7 +83,7 @@ namespace folio1_app_test.Services
             }
         }
 
-        public async Task<(bool IsSuccess, string Message)> EditFolioClassAsync(int id, FolioClass folioClass)
+        public async Task<(FolioClass folioClass, bool IsSuccess, string Message)> EditFolioClassAsync(int id, FolioClass folioClass)
         {
             try
             {
@@ -94,18 +94,18 @@ namespace folio1_app_test.Services
                     {
                         dbContext.Entry(result).CurrentValues.SetValues(folioClass);
                         await dbContext.SaveChangesAsync();
-                        return (true, "Success!!!");
+                        return (null, true, "Success!!!");
                     }
                 }
-                return (false, "Not found");
+                return (null, false, "Not found");
             }
             catch (Exception ex)
             {
-                return (false, ex.Message);
+                return (null, false, ex.Message);
             }
         }
 
-        public async Task<(bool IsSuccess, string Message)> DeleteFolioClassAsync(int id)
+        public async Task<(FolioClass folioClass, bool IsSuccess, string Message)> DeleteFolioClassAsync(int id)
         {
             try
             {
@@ -117,14 +117,14 @@ namespace folio1_app_test.Services
                     {
                         dbContext.FolioClasses.Remove(result);
                         await dbContext.SaveChangesAsync();
-                        return (true, "Success!!!");
+                        return (null, true, "Success!!!");
                     }
                 }
-                return (true, "Not Record found");
+                return (null, false, "Not Record found");
             }
             catch (Exception ex)
             {
-                return (false, ex.Message);
+                return (null, false, ex.Message);
             }
         }
     }
