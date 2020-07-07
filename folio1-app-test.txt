@@ -1,3 +1,1 @@
-Testing CI CD pipeline
 Testing Release pipeline
-testing again
