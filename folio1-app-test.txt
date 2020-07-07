@@ -1,2 +1,2 @@
-Testing CI CD pipelines
+Testing CI CD pipeline
 Testing Release pipeline
