@@ -22,12 +22,17 @@ namespace folio1_app_test.Controllers
             this.studentBL = studentBL;
         }
 
-        //// GET: api/<StudentController>
-        //[HttpGet]
-        //public async Task<IActionResult> Get()
-        //{
-
-        //}
+        // GET: api/<StudentController>
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var result = await studentBL.GetAllStudentsAsync();
+            return Ok(JsonConvert.SerializeObject(result,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                }));
+        }
 
         // GET api/<StudentController>/5
         [HttpGet("{id}")]

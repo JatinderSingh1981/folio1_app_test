@@ -9,8 +9,9 @@ namespace folio1_app_test.BL
 {
     public interface IStudentBL
     {
-        Task<(IEnumerable<Student> Students, bool IsSuccess, string Message)> GetStudentsAsync(int FolioClassId);
-        Task<(Student Student, bool IsSuccess, string Message)> GetStudentAsync(int StudentId);
+        Task<(IEnumerable<Student> Students, bool IsSuccess, string Message)> GetAllStudentsAsync();
+        Task<(IEnumerable<Student> Students, bool IsSuccess, string Message)> GetStudentsAsync(int folioClassId);
+        Task<(Student Student, bool IsSuccess, string Message)> GetStudentAsync(int studentId);
         Task<(bool IsSuccess, string Message)> CheckDuplicateAsync(int StudentId, string studentLastName);
         Task<(Student student, bool IsSuccess, string Message)> AddStudentAsync(Student student);
         Task<(Student student, bool IsSuccess, string Message)> EditStudentAsync(int id, Student student);
@@ -24,14 +25,17 @@ namespace folio1_app_test.BL
         {
             this.studentService = studentService;
         }
-
-        public async Task<(IEnumerable<Student> Students, bool IsSuccess, string Message)> GetStudentsAsync(int FolioClassId)
+        public async Task<(IEnumerable<Student> Students, bool IsSuccess, string Message)> GetAllStudentsAsync()
         {
-            return await this.studentService.GetStudentsAsync(FolioClassId);
+            return await this.studentService.GetAllStudentsAsync();
         }
-        public async Task<(Student Student, bool IsSuccess, string Message)> GetStudentAsync(int StudentId)
+        public async Task<(IEnumerable<Student> Students, bool IsSuccess, string Message)> GetStudentsAsync(int folioClassId)
         {
-            return await this.studentService.GetStudentAsync(StudentId);
+            return await this.studentService.GetStudentsAsync(folioClassId);
+        }
+        public async Task<(Student Student, bool IsSuccess, string Message)> GetStudentAsync(int studentId)
+        {
+            return await this.studentService.GetStudentAsync(studentId);
         }
         public async Task<(bool IsSuccess, string Message)> CheckDuplicateAsync(int StudentId, string studentLastName)
         {

@@ -11,9 +11,10 @@ namespace folio1_app_test.Services
 {
     public interface IStudentService
     {
-        Task<(IEnumerable<Student> Students, bool IsSuccess, string Message)> GetStudentsAsync(int FolioClassId);
-        Task<(Student Student, bool IsSuccess, string Message)> GetStudentAsync(int StudentId);
-        Task<(bool IsSuccess, string Message)> CheckDuplicateAsync(int StudentId, string studentLastName);
+        Task<(IEnumerable<Student> Students, bool IsSuccess, string Message)> GetAllStudentsAsync();
+        Task<(IEnumerable<Student> Students, bool IsSuccess, string Message)> GetStudentsAsync(int folioClassId);
+        Task<(Student Student, bool IsSuccess, string Message)> GetStudentAsync(int studentId);
+        Task<(bool IsSuccess, string Message)> CheckDuplicateAsync(int studentId, string studentLastName);
         Task<(Student student, bool IsSuccess, string Message)> AddStudentAsync(Student student);
         Task<(Student student, bool IsSuccess, string Message)> EditStudentAsync(int id, Student student);
         Task<(Student student, bool IsSuccess, string Message)> DeleteClassStudentsAsync(int id);
@@ -48,11 +49,11 @@ namespace folio1_app_test.Services
             }
         }
 
-        public async Task<(IEnumerable<Student> Students, bool IsSuccess, string Message)> GetStudentsAsync(int FolioClassId)
+        public async Task<(IEnumerable<Student> Students, bool IsSuccess, string Message)> GetAllStudentsAsync()
         {
             try
             {
-                var students = await dbContext.Students.Where(x => x.FolioClassId == FolioClassId).ToListAsync();
+                var students = await dbContext.Students.ToListAsync();
                 if (students != null && students.Any())
                 {
                     var result = mapper.Map<IEnumerable<Student>>(students);
@@ -67,11 +68,30 @@ namespace folio1_app_test.Services
             }
         }
 
-        public async Task<(Student Student, bool IsSuccess, string Message)> GetStudentAsync(int StudentId)
+        public async Task<(IEnumerable<Student> Students, bool IsSuccess, string Message)> GetStudentsAsync(int folioClassId)
         {
             try
             {
-                var student = await dbContext.Students.Where(x => x.Id == StudentId).FirstOrDefaultAsync();
+                var students = await dbContext.Students.Where(x => x.FolioClassId == folioClassId).ToListAsync();
+                if (students != null && students.Any())
+                {
+                    var result = mapper.Map<IEnumerable<Student>>(students);
+                    return (result, true, null);
+                }
+                return (null, false, "Not found");
+            }
+            catch (Exception ex)
+            {
+
+                return (null, false, ex.Message);
+            }
+        }
+
+        public async Task<(Student Student, bool IsSuccess, string Message)> GetStudentAsync(int studentId)
+        {
+            try
+            {
+                var student = await dbContext.Students.Where(x => x.Id == studentId).FirstOrDefaultAsync();
                 if (student != null)
                 {
                     var result = mapper.Map<Student>(student);
@@ -86,15 +106,15 @@ namespace folio1_app_test.Services
             }
         }
 
-        public async Task<(bool IsSuccess, string Message)> CheckDuplicateAsync(int StudentId, string studentLastName)
+        public async Task<(bool IsSuccess, string Message)> CheckDuplicateAsync(int studentId, string studentLastName)
         {
             try
             {
                 string lastNameErrorMessage = "The surname needs to be unique. Please enter another surname";
                 StudentDB student = null;
-                if (StudentId > 0)
+                if (studentId > 0)
                 {
-                    student = await dbContext.Students.Where(x => x.LastName == studentLastName && x.Id != StudentId).FirstOrDefaultAsync();
+                    student = await dbContext.Students.Where(x => x.LastName == studentLastName && x.Id != studentId).FirstOrDefaultAsync();
                 }
                 else
                 {
