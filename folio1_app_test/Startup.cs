@@ -38,8 +38,14 @@ namespace folio1_app_test
             }));
             services.AddControllers();
 
+            #region Swagger
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(); 
+            #endregion
+
             services.AddAutoMapper(typeof(Startup));
 
+            #region DI
             services.AddScoped<IFolioClassBL, FolioClassBL>();
             services.AddScoped<IStudentBL, StudentBL>();
 
@@ -47,12 +53,25 @@ namespace folio1_app_test
             services.AddScoped<IStudentService, StudentService>();
 
             services.AddDbContext<DataContext>(options => options.UseInMemoryDatabase(nameof(Startup)));
-        }
+        } 
+        #endregion
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors(AllowAllOrigins);
+            #region Swagger
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Folio1 API V1");
+            });
+
+            #endregion
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
